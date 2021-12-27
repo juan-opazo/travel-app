@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+}
+
+main {
+    background-color: bisque;
+    display: flex;
+    flex-direction: column;
+    padding: 1em 0.5em;
+}
+
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    &.img {
+        flex: 1;
+    }
+    &.description {
+        flex: 2;
+    }
+    .buttons {
+        margin: 1em 0.5em;
+    }
+}
+
+@media(min-width:600px) {
+    main {
+        flex-flow: wrap;
+        flex-direction: row;
+    }
+}
