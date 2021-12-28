@@ -11,31 +11,23 @@
             <header>
                 <h1>Travel Planner</h1>
             </header>
-            <div>
-                <div id="input-fields">
-                    <input id="destination" placeholder="Destination Postal Code" type="text">
-                    <input id="start-date" placeholder="DD/MM/YYYY" type="date">
-                    <input id="end-date" placeholder="DD/MM/YYYY" type="date">
-                </div>
-                <button class="material-button" onclick="return Client.handleSubmit(event)" onsubmit="return Client.handleSubmit(event)">Submit</button>
-            </div>
             <main>
                 
-                <div class="content img">
-                    <img alt="photo"/>
-                </div>
-                <div class="content description">
-                    <h2 id="trip-header"> My trip to: <span id="destination">Paris, France</span> </h2>
-                    <h3 id="trip-date"> Departing: 02/12/2020 </h3>
-                    <div class="buttons">
-                        <button>save trip</button>
-                        <button>remove trip</button>
+                <form action="javascript:;" onsubmit="Client.handleSubmit(this)" class="form" id="travel-form">
+                    <div class="form">
+                        <label for="to">To</label>
+                        <input type="text" name="to" id="to" placeholder="City">
+                        <label for="from">From</label>
+                        <input type="text" name="from" id="from" placeholder="City">
                     </div>
-                    <h4 id="days-away-message"> Paris, France is 220 days away</h4>
-                    <p> Typical weather for then is:</p>
-                    <p id="length-of-trip"> High: -48, Low: -35</p>
-                    <p id="weather-information"> Mostly cloudy throughout the day</p>
-                </div>
+                    <div class="form">
+                        <label for="start-date">Departure</label>
+                        <input type="date" name="depart" id="depart">
+                        <label for="end-date">Return</label>
+                        <input type="date" name="return" id="return">
+                        <input type="submit" value="Submit" class="form button">
+                    </div>
+                </form>
             </main>
     
         </div>
@@ -44,7 +36,6 @@
 
     <script>
         if ('serviceWorker' in navigator) {
-            // Use the window load event to keep the page load performant
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js');
             });

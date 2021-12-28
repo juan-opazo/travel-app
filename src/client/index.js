@@ -1,8 +1,8 @@
 import './styles/style.scss'
-import { checkInput, handleSubmit, scrollToElement, getCoordinatesOfElement } from './js/app'
+import { validateInput, handleSubmit, handleDates, getData } from './js/app'
 export {
     handleSubmit,
-    checkInput,
-    getCoordinatesOfElement,
-    scrollToElement
+    handleDates,
+    getData,
+    validateInput
 }

@@ -1,0 +1,5 @@
+<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test</title><script defer="defer" src="main.js"></script></head><body><div class="container"><header><h1>Travel Planner</h1></header><main><form action="javascript:;" onsubmit="Client.handleSubmit(this)" class="form" id="travel-form"><div class="form"><label for="to">To</label> <input name="to" id="to" placeholder="City"> <label for="from">From</label> <input name="from" id="from" placeholder="City"></div><div class="form"><label for="start-date">Departure</label> <input type="date" name="depart" id="depart"> <label for="end-date">Return</label> <input type="date" name="return" id="return"> <input type="submit" value="Submit" class="form button"></div></form></main></div></body><script>if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }</script></html>

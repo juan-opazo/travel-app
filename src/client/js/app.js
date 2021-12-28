@@ -1,69 +1,84 @@
-import fetch from 'node-fetch';
-
-function checkInput(destination, startDate, endDate) {
-    console.log("::: Running checkInput :::");
-    if (isEmptyOrSpaces(destination) || isEmptyOrSpaces(startDate) || isEmptyOrSpaces(endDate)) {
+function validateInput(data) {
+    if(data.to == "") {
+        alert('Please fill out your destinaton city');
+        return false;
+    } else if(data.from == "") {
+        alert('Please fill out your departure city');
+        return false;
+    } else if (data.startDate == "") {
+        alert('Please select your start date');
+        return false;
+    } else if (data.endDate == "") {
+        alert('Please select your end date');
         return false;
     }
-    if (Date.parse(endDate) < Date.parse(startDate)) {
-        return false;
-    } else {
-        return true;
-    }
-
-    function isEmptyOrSpaces(str) {
-        return str === null || str.match(/^ *$/) !== null;
-    }
+    return true;
 }
 
-function getCoordinatesOfElement(element) {
-    const rect = element.getBoundingClientRect();
-    return {
-        top: rect.top + window.pageYOffset,
-        left: rect.left + window.pageXOffset
+async function handleSubmit(that) {
+    let projectData = {};
+
+    let userData = {
+        to: that.to.value,
+        from: that.from.value,
+        startDate: that.depart.value,
+        endDate: that.return.value
     };
+    await Client.validateInput(userData);
+    projectData = Client.handleDates(userData.startDate, userData.endDate);
+
+    const coordinates = await Client.getData('/getLocation', { location: userData.to})
+
+    const weather = await Client.getData('/getWeather', { lat: coordinates.lat, long: coordinates.long });
+    
+    let forecastDay = 0;
+    if(projectData.isSoon) {
+        forecastDay = projectData.countdown;
+    }
+    const weatherData = {
+        city: weather.city_name,
+        high_temp: weather.data[forecastDay].high_temp,
+        low_temp: weather.data[forecastDay].low_temp,
+        forecast: weather.data[forecastDay].weather.description
+    }
+
+    const image = await Client.getData('/getPhoto', { city: userData.to });
+    projectData.image_url = image.hits[0].largeImageURL;
+
+    Object.assign(projectData, weatherData);
 }
 
-function scrollToElement(element) {
-    window.scrollTo({
-        top: getCoordinatesOfElement(element).top,
-        left: getCoordinatesOfElement(element).left,
-        behavior: "smooth"
-    });
-}
-
-function handleSubmit(event) {
-    event.preventDefault()
-
-    // check what text was put into the form field
-    let destination = document.getElementById('destination').value;
-    let startDate = document.getElementById('start-date').value;
-    let endDate = document.getElementById('end-date').value;
-    if (checkInput(destination, startDate, endDate)) {
-        fetch('/getData', {
-                method: "POST",
-                credentials: "same-origin",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ "destination": destination, "startDate": startDate, "endDate": endDate })
-            })
-            .then(res => res.json())
-            .then((res) => {
-                const data = res;
-                console.log(data);
-                document.getElementById("trip-header").innerHTML = `My trip to:\n${data["cityName"]}, ${data["state"]}, ${data["country"]}`;
-                document.getElementById("trip-date").innerHTML = `Departing:\n${startDate}`;
-                document.getElementById("days-away-message").innerHTML = `${data["cityName"]}, ${data["state"]}, ${data["country"]} is ${data["daysAway"]} days away`;
-                document.getElementById("length-of-trip").innerHTML = `A ${((Date.parse(endDate)-Date.parse(startDate))/ (1000 * 3600 * 24)).toFixed(0)}-day trip that ends on ${endDate}`
-                document.getElementById("trip-data-container").style.backgroundImage = `url('${data["image"]}')`
-                console.log(data["weatherData"][0]);
-                if (data["weatherData"][0]["max_temp"] != null) {
-                    document.getElementById("weather-information").innerHTML =
-                        `Typical weather for then is:\nHigh - ${data["weatherData"][0]["max_temp"]} Low - ${data["weatherData"][0]["low_temp"]}`;
-                } else {
-                    document.getElementById("weather-information").innerHTML = `Typical weather for then is:\n${data["weatherData"][0]["temp"]}&#8451`;
-                }
-            })
+async function getData(url, data) {
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    try {
+        const data = await response.json();
+        return data;
+    } catch(error) {
+        console.log("error", error);
     }
 }
 
-export { checkInput, handleSubmit, scrollToElement, getCoordinatesOfElement }
+function handleDates(startDate, endDate) {
+    const today = new Date();
+    const depart = new Date(startDate);
+    const returnDate = new Date(endDate);
+    let isSoon = false;
+
+    const countdown = Math.round((depart.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)); 
+    const duration = Math.ceil((returnDate.getTime() - depart.getTime()) / (1000 * 60 * 60 * 24));
+
+    if(countdown < 16) {
+        isSoon = true;
+    }
+    return { depart: startDate, duration: duration, countdown: countdown + 1, isSoon: isSoon};
+}
+
+export { validateInput, handleSubmit, getData, handleDates };
