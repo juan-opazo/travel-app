@@ -5,7 +5,7 @@ const express = require('express')
 
 
 // const baseURL = 'https://api.meaningcloud.com/sentiment-2.1?'
-
+console.log(process.env.GEONAMES_ID);
 
 const app = express()
 
