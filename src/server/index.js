@@ -1,16 +1,16 @@
-const dotenv = require('dotenv')
+import fetch from "node-fetch";
+import dotenv from 'dotenv'
 dotenv.config()
-var path = require('path')
-const fetch = require("node-fetch")
-const express = require('express')
-const bodyParser = require('body-parser')
+import path from 'path'
+import express from 'express'
+import bodyParser from 'body-parser'
 
 // const baseURL = 'https://api.meaningcloud.com/sentiment-2.1?'
 
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-const cors = require('cors')
+import cors from 'cors'
 app.use(cors())
 app.use(express.static('dist'))
 
@@ -20,7 +20,7 @@ app.get('/', function (req, res) {
 })
 
 // designates what port the app will listen to for incoming requests
-app.listen(8080, function () {
+const server = app.listen(8080, function () {
     console.log('Example app listening on port 8080!')
 })
 
