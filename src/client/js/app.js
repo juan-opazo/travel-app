@@ -1,3 +1,4 @@
+// validate input info added by user
 function validateInput(data) {
     if(data.to == "") {
         alert('Please fill out your destinaton city');
@@ -24,6 +25,7 @@ async function handleSubmit(that) {
         startDate: that.depart.value,
         endDate: that.return.value
     };
+    // validate user info
     await Client.validateInput(userData);
     projectData = Client.handleDates(userData.startDate, userData.endDate);
 
@@ -31,6 +33,7 @@ async function handleSubmit(that) {
 
     const weather = await Client.getData('/getWeather', { lat: coordinates.lat, long: coordinates.long });
     
+    // check if it is required a forecast or just current weather
     let forecastDay = 0;
     if(projectData.isSoon) {
         forecastDay = projectData.countdown;
@@ -42,9 +45,11 @@ async function handleSubmit(that) {
         forecast: weather.data[forecastDay].weather.description
     }
 
+    // get image
     const image = await Client.getData('/getPhoto', { city: userData.to });
     projectData.image_url = image.hits[0].largeImageURL;
 
+    // add weatherData to projectData
     Object.assign(projectData, weatherData);
 }
 
