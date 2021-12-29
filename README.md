@@ -13,7 +13,7 @@ cd <project directory>
 npm i
 ```
 
-### Signup for API keys :key:
+### Signup for API keys 
 
 This project uses the following APIs:
 - [Geonames](http://www.geonames.org/export/web-services.html)
@@ -25,9 +25,9 @@ When you sign up, you'll be able to get your personal API keys for Weatherbit an
 At the root of the project, create a new file named `.env`. Inside the file, add the following lines, replacing the stars with your personal API keys and the Geonames username. 
 
 ```
-GEONAMES_ID=**************************
-WEATHERBIT_KEY=**************************
-PIXABAY_KEY=**************************
+GEONAMES_ID=-----
+WEATHERBIT_KEY=-----
+PIXABAY_KEY=-----
 ```
 
 ### After setup
@@ -41,7 +41,7 @@ npm run build-dev
 To run the production server (with express), run these commands
 ```
 npm run build-prod
-npm run start
+npm start
 ```
 This will create a `dist` folder with the built code. 
 
